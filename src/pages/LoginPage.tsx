@@ -139,7 +139,7 @@ export default function LoginPage() {
                 {t("login")}
               </h2>
               <div className="text-sm opacity-70">
-                Welcome back! Please enter your details.
+                {t('login_welcome')}
               </div>
             </div>
 
@@ -152,7 +152,7 @@ export default function LoginPage() {
 
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-(--foreground) opacity-80 pl-1">
-                  Email
+                  {t('email')}
                 </label>
                 <input
                   id="email"
@@ -167,7 +167,7 @@ export default function LoginPage() {
 
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-(--foreground) opacity-80 pl-1">
-                  Password
+                  {t('password')}
                 </label>
                 <div className="relative">
                   <input

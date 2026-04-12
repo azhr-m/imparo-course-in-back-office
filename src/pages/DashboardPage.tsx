@@ -1,8 +1,23 @@
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import { FileUp, Clock, CheckCircle2, Users } from 'lucide-react';
+import { FileUp, Clock, CheckCircle2, Users, User } from 'lucide-react';
 import api from '../lib/api';
 import { Link } from 'react-router-dom';
+import type { Submission } from './SubmissionsPage';
+
+interface Agent {
+  id: number;
+  name: string;
+  is_active?: boolean;
+}
+
+interface StatCardProps {
+  title: string;
+  value: number;
+  icon: React.ReactNode;
+  color: string;
+  loading?: boolean;
+}
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -20,8 +35,8 @@ export default function DashboardPage() {
   const { data: agents } = useQuery({
     queryKey: ['agents'],
     queryFn: async () => {
-      const res = await api.get('/agents').catch(() => ({ data: [] })); // gracefully handle if not admin
-      return res.data;
+      const res = await api.get('/agents').catch(() => ({ data: { data: [] } }));
+      return Array.isArray(res.data) ? res.data : (res.data?.data || []);
     }
   });
 
@@ -32,18 +47,20 @@ export default function DashboardPage() {
   const today = new Date().toISOString().split('T')[0];
   
   const stats = {
-    today: safeSubmissions.filter((s: any) => s.created_at?.startsWith(today)).length,
-    pending: safeSubmissions.filter((s: any) => s.status === 'pending').length,
-    processed: safeSubmissions.filter((s: any) => s.status === 'processed').length,
-    activeAgents: safeAgents.filter((a: any) => a.is_active !== false).length || 0,
+    today: safeSubmissions.filter((s: Submission) => s.created_at?.startsWith(today)).length,
+    pending: safeSubmissions.filter((s: Submission) => s.status === 'pending').length,
+    processed: safeSubmissions.filter((s: Submission) => s.status === 'processed').length,
+    activeAgents: safeAgents.filter((a: Agent) => a.is_active !== false).length || 0,
   };
 
-  const recentSubmissions = safeSubmissions.slice(0, 10);
+  const recentSubmissions = [...safeSubmissions]
+    .sort((a: Submission, b: Submission) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 10);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-extrabold text-[#d32f2f]">
           {t('dashboard')}
         </h1>
       </div>
@@ -57,16 +74,16 @@ export default function DashboardPage() {
 
       <div className="bg-(--card) rounded-2xl border border-(--border) shadow-sm overflow-hidden">
         <div className="p-6 border-b border-(--border) flex justify-between items-center">
-          <h2 className="text-lg font-bold">Recent Submissions</h2>
+          <h2 className="text-lg font-bold">{t('recent_submissions')}</h2>
           <Link to="/submissions" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
-            View all
+            {t('view_all')}
           </Link>
         </div>
         
         <div className="overflow-x-auto">
           {isLoading ? (
             <div className="p-8 flex justify-center">
-              <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+              <div className="w-8 h-8 border-4 border-red-100 border-t-[#d32f2f] rounded-full animate-spin" />
             </div>
           ) : (
             <table className="w-full text-sm text-left">
@@ -75,6 +92,7 @@ export default function DashboardPage() {
                   <th className="px-6 py-4 font-semibold">ID</th>
                   <th className="px-6 py-4 font-semibold">{t('full_name')}</th>
                   <th className="px-6 py-4 font-semibold">{t('bulgarian_id')}</th>
+                  <th className="px-6 py-4 font-semibold">{t('agent')}</th>
                   <th className="px-6 py-4 font-semibold">{t('status')}</th>
                   <th className="px-6 py-4 font-semibold">{t('date')}</th>
                 </tr>
@@ -83,22 +101,32 @@ export default function DashboardPage() {
                 {recentSubmissions.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-8 text-center opacity-70">
-                      No submissions found.
+                      {t('no_submissions_found')}
                     </td>
                   </tr>
                 ) : (
-                  recentSubmissions.map((sub: any) => (
+                  recentSubmissions.map((sub: Submission, index: number) => (
                     <tr key={sub.id} className="hover:bg-(--border)/30 transition-colors">
-                      <td className="px-6 py-4 font-medium">#{sub.id}</td>
+                      <td className="px-6 py-4 font-medium">{index + 1}</td>
                       <td className="px-6 py-4">{sub.full_name}</td>
                       <td className="px-6 py-4 font-mono">{sub.bulgarian_id}</td>
                       <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        <div className="inline-flex items-center gap-1.5 px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                          <User size={13} className="opacity-60" />
+                          {sub.agent?.name || sub.agent_id}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${
                           sub.status === 'processed' 
-                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800' 
-                            : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800'
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' 
+                            : sub.status === 'rejected'
+                            ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800'
+                            : sub.status === 'correction_required'
+                            ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800'
+                            : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800'
                         }`}>
-                          {sub.status === 'processed' ? t('processed_badge') : t('pending_badge')}
+                          {t('status_' + sub.status)}
                         </span>
                       </td>
                       <td className="px-6 py-4 opacity-70">
@@ -116,7 +144,7 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ title, value, icon, color, loading }: { title: string, value: number, icon: any, color: string, loading?: boolean }) {
+function StatCard({ title, value, icon, color, loading }: StatCardProps) {
   const colorMap: Record<string, string> = {
     blue: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
     amber: 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400',

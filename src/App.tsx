@@ -9,7 +9,12 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const SubmissionsPage = lazy(() => import('./pages/SubmissionsPage'));
+const SubmissionDetailsPage = lazy(() => import('./pages/SubmissionDetailsPage'));
 const AgentsPage = lazy(() => import('./pages/AgentsPage'));
+const AgentDetailsPage = lazy(() => import('./pages/AgentDetailsPage'));
+const CoursesPage = lazy(() => import('./pages/CoursesPage'));
+const UsersPage = lazy(() => import('./pages/UsersPage'));
+const ActivatePage = lazy(() => import('./pages/ActivatePage'));
 
 const queryClient = new QueryClient();
 
@@ -23,12 +28,17 @@ function App() {
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/activate" element={<ActivatePage />} />
                 
                 {/* Protected Routes inside Layout */}
                 <Route element={<MainLayout />}>
                   <Route path="/dashboard" element={<DashboardPage />} />
                   <Route path="/submissions" element={<SubmissionsPage />} />
+                  <Route path="/submissions/:id" element={<SubmissionDetailsPage />} />
                   <Route path="/agents" element={<AgentsPage />} />
+                  <Route path="/agents/:id" element={<AgentDetailsPage />} />
+                  <Route path="/courses" element={<CoursesPage />} />
+                  <Route path="/users" element={<UsersPage />} />
                 </Route>
                 
                 <Route path="*" element={<Navigate to="/" replace />} />

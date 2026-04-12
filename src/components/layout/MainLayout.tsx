@@ -46,7 +46,13 @@ export default function MainLayout() {
   const navItems = [
     { name: t("dashboard"), path: "/dashboard" },
     { name: t("submissions"), path: "/submissions" },
-    ...(user?.role === "admin" ? [{ name: t("agents"), path: "/agents" }] : []),
+    ...(user?.role === "admin"
+      ? [
+          { name: t("agents"), path: "/agents" },
+          { name: t("courses_nav"), path: "/courses" },
+          { name: t("users"), path: "/users" },
+        ]
+      : []),
   ];
 
   return (
