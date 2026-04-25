@@ -10,7 +10,7 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  AlertTriangle
+  AlertTriangle,
 } from "lucide-react";
 import api from "../lib/api";
 
@@ -41,10 +41,14 @@ export default function SubmissionsPage() {
   const [courseFilter, setCourseFilter] = useState("");
 
   const STATUS_STYLES: Record<string, string> = {
-    processed: "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30",
-    rejected: "bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30",
-    correction_required: "bg-purple-50 text-purple-700 border-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-900/30",
-    pending: "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-900/30",
+    processed:
+      "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30",
+    rejected:
+      "bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30",
+    correction_required:
+      "bg-purple-50 text-purple-700 border-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-900/30",
+    pending:
+      "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-900/30",
   };
 
   const { data: submissions, isLoading } = useQuery<Submission[]>({
@@ -73,20 +77,28 @@ export default function SubmissionsPage() {
           : true;
         const matchStatus = statusFilter ? sub.status === statusFilter : true;
         const matchCourse = courseFilter
-          ? (sub.course_id?.toString() === courseFilter || sub.course?.id?.toString() === courseFilter)
+          ? sub.course_id?.toString() === courseFilter ||
+            sub.course?.id?.toString() === courseFilter
           : true;
 
         return matchSearch && matchStatus && matchCourse;
       })
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
   }, [submissions, searchTerm, statusFilter, courseFilter]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "processed": return <CheckCircle2 size={12} />;
-      case "rejected": return <XCircle size={12} />;
-      case "correction_required": return <AlertTriangle size={12} />;
-      default: return <Clock size={12} />;
+      case "processed":
+        return <CheckCircle2 size={12} />;
+      case "rejected":
+        return <XCircle size={12} />;
+      case "correction_required":
+        return <AlertTriangle size={12} />;
+      default:
+        return <Clock size={12} />;
     }
   };
 
@@ -101,7 +113,10 @@ export default function SubmissionsPage() {
       {/* FILTERS BAR */}
       <div className="bg-(--card) p-6 rounded-2xl shadow-sm border border-(--border) flex flex-wrap gap-4 items-center">
         <div className="relative flex-1 min-w-[300px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30" size={20} />
+          <Search
+            className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30"
+            size={20}
+          />
           <input
             type="text"
             placeholder={t("search")}
@@ -114,9 +129,11 @@ export default function SubmissionsPage() {
         <div className="flex items-center gap-3">
           <div className="hidden lg:flex items-center gap-2 px-3 py-2 bg-(--input) rounded-lg opacity-40">
             <Filter size={14} />
-            <span className="text-[10px] font-black uppercase tracking-widest">{t('filters')}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest">
+              {t("filters")}
+            </span>
           </div>
-          
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -126,7 +143,9 @@ export default function SubmissionsPage() {
             <option value="pending">{t("status_pending")}</option>
             <option value="processed">{t("status_processed")}</option>
             <option value="rejected">{t("status_rejected")}</option>
-            <option value="correction_required">{t("status_correction_required")}</option>
+            <option value="correction_required">
+              {t("status_correction_required")}
+            </option>
           </select>
 
           <select
@@ -136,7 +155,9 @@ export default function SubmissionsPage() {
           >
             <option value="">{t("all_courses")}</option>
             {courses?.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
             ))}
           </select>
         </div>
@@ -153,20 +174,37 @@ export default function SubmissionsPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-(--input) text-(--foreground) whitespace-nowrap">
                 <tr>
-                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40 w-16 text-center">#</th>
-                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40">{t("bulgarian_id")}</th>
-                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40">{t("full_name")}</th>
-                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40">{t("course")}</th>
-                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40 hidden md:table-cell">{t("agent")}</th>
-                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40">{t("date")}</th>
-                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40 text-center">{t("status")}</th>
+                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40 w-16 text-center">
+                    #
+                  </th>
+                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40">
+                    {t("bulgarian_id")}
+                  </th>
+                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40">
+                    {t("full_name")}
+                  </th>
+                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40">
+                    {t("course")}
+                  </th>
+                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40 hidden md:table-cell">
+                    {t("agent")}
+                  </th>
+                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40">
+                    {t("date")}
+                  </th>
+                  <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40 text-center">
+                    {t("status")}
+                  </th>
                   <th className="px-6 py-5 font-black uppercase tracking-widest text-[10px] opacity-40 text-right"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-(--border)">
                 {filteredData.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-6 py-20 text-center opacity-40 italic font-bold">
+                    <td
+                      colSpan={8}
+                      className="px-6 py-20 text-center opacity-40 italic font-bold"
+                    >
                       {t("no_submissions_found")}
                     </td>
                   </tr>
@@ -177,12 +215,21 @@ export default function SubmissionsPage() {
                       className="hover:bg-(--input)/40 transition-all cursor-pointer group"
                       onClick={() => navigate(`/submissions/${sub.id}`)}
                     >
-                      <td className="px-6 py-5 font-bold opacity-20 text-center">{index + 1}</td>
-                      <td className="px-6 py-5 font-black tracking-wider text-xs">{sub.bulgarian_id}</td>
-                      <td className="px-6 py-5 font-black text-(--foreground) tracking-tight">{sub.full_name}</td>
+                      <td className="px-6 py-5 font-bold opacity-20 text-center">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-5 font-black tracking-wider text-xs">
+                        {sub.bulgarian_id}
+                      </td>
+                      <td className="px-6 py-5 font-black text-(--foreground) tracking-tight">
+                        {sub.full_name}
+                      </td>
                       <td className="px-6 py-5">
                         <span className="inline-flex px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-tight border border-indigo-100/50 dark:border-indigo-900/30">
-                          {sub.course?.name || courses?.find(c => c.id === Number(sub.course_id))?.name || 'N/A'}
+                          {sub.course?.name ||
+                            courses?.find((c) => c.id === Number(sub.course_id))
+                              ?.name ||
+                            "N/A"}
                         </span>
                       </td>
                       <td className="px-6 py-5 hidden md:table-cell">
@@ -195,7 +242,9 @@ export default function SubmissionsPage() {
                         {new Date(sub.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-5 text-center whitespace-nowrap">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-sm ${STATUS_STYLES[sub.status] || STATUS_STYLES.pending}`}>
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-sm ${STATUS_STYLES[sub.status] || STATUS_STYLES.pending}`}
+                        >
                           {getStatusIcon(sub.status)}
                           {t(`status_${sub.status}`)}
                         </span>

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../components/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
+import { AxiosError } from "axios";
 import { Globe, ArrowLeft, Eye, EyeOff } from "lucide-react";
 
 const sliderImages = [
@@ -16,8 +17,8 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("admin@imparo.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,8 +56,9 @@ export default function LoginPage() {
       } else {
         setError(t("invalid_credentials"));
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || t("login_failed"));
+    } catch (err) {
+      const axiosError = err as AxiosError<{ message?: string }>;
+      setError(axiosError.response?.data?.message || t("login_failed"));
     } finally {
       setLoading(false);
     }
@@ -138,9 +140,7 @@ export default function LoginPage() {
               <h2 className="text-3xl font-bold mb-2 text-(--foreground)">
                 {t("login")}
               </h2>
-              <div className="text-sm opacity-70">
-                {t('login_welcome')}
-              </div>
+              <div className="text-sm opacity-70">{t("login_welcome")}</div>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-5">
@@ -152,7 +152,7 @@ export default function LoginPage() {
 
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-(--foreground) opacity-80 pl-1">
-                  {t('email')}
+                  {t("email")}
                 </label>
                 <input
                   id="email"
@@ -167,7 +167,7 @@ export default function LoginPage() {
 
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-(--foreground) opacity-80 pl-1">
-                  {t('password')}
+                  {t("password")}
                 </label>
                 <div className="relative">
                   <input

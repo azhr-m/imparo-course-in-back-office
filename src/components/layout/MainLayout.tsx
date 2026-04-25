@@ -2,7 +2,18 @@ import { Outlet, Navigate, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../ThemeProvider";
-import { Sun, Moon, LogOut, Menu, ChevronDown } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  LogOut,
+  Menu,
+  ChevronDown,
+  LayoutDashboard,
+  ClipboardList,
+  Users,
+  BookOpen,
+  UserCog,
+} from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 export default function MainLayout() {
@@ -44,13 +55,13 @@ export default function MainLayout() {
   };
 
   const navItems = [
-    { name: t("dashboard"), path: "/dashboard" },
-    { name: t("submissions"), path: "/submissions" },
+    { name: t("dashboard"), path: "/dashboard", icon: LayoutDashboard },
+    { name: t("submissions"), path: "/submissions", icon: ClipboardList },
     ...(user?.role === "admin"
       ? [
-          { name: t("agents"), path: "/agents" },
-          { name: t("courses_nav"), path: "/courses" },
-          { name: t("users"), path: "/users" },
+          { name: t("agents"), path: "/agents", icon: Users },
+          { name: t("courses_nav"), path: "/courses", icon: BookOpen },
+          { name: t("users"), path: "/users", icon: UserCog },
         ]
       : []),
   ];
@@ -89,13 +100,14 @@ export default function MainLayout() {
               to={item.path}
               onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) =>
-                `flex items-center px-4 py-2.5 text-sm font-medium transition-colors ${
+                `flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
                   isActive
-                    ? "text-[#d32f2f]"
-                    : "text-gray-500 hover:text-(--foreground)"
+                    ? "bg-[#d32f2f]/10 text-[#d32f2f]"
+                    : "text-gray-500 hover:bg-(--border)/30 hover:text-(--foreground)"
                 }`
               }
             >
+              <item.icon size={18} className="mr-3 opacity-80" />
               {item.name}
             </NavLink>
           ))}
@@ -130,7 +142,7 @@ export default function MainLayout() {
             <button
               onClick={toggleLanguage}
               className="w-9 h-9 flex items-center justify-center rounded border border-(--border) bg-(--card) hover:bg-(--input) transition-colors text-lg"
-              title="Toggle Language"
+              title={t("toggle_language", "Toggle Language")}
             >
               {i18n.language === "bg" ? "EN" : "BG"}
             </button>
@@ -138,7 +150,7 @@ export default function MainLayout() {
             <button
               onClick={handleThemeToggle}
               className="w-9 h-9 flex items-center justify-center rounded border border-(--border) bg-(--card) hover:bg-(--input) transition-colors"
-              title="Toggle Theme"
+              title={t("toggle_theme", "Toggle Theme")}
             >
               {theme === "dark" ? (
                 <Moon size={16} className="text-indigo-400" />
@@ -160,11 +172,17 @@ export default function MainLayout() {
 
               {profileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-(--card) border border-(--border) rounded-md shadow-lg py-1 z-50">
-                  <button className="w-full text-left px-4 py-2 hover:bg-(--input) text-sm text-(--foreground) transition-colors">
-                    User View
+                  <button
+                    disabled
+                    className="w-full text-left px-4 py-2 opacity-50 cursor-not-allowed text-sm text-(--foreground) transition-colors"
+                  >
+                    {t("user_view", "User View")}
                   </button>
-                  <button className="w-full text-left px-4 py-2 hover:bg-(--input) text-sm text-(--foreground) transition-colors">
-                    Settings
+                  <button
+                    disabled
+                    className="w-full text-left px-4 py-2 opacity-50 cursor-not-allowed text-sm text-(--foreground) transition-colors"
+                  >
+                    {t("settings", "Settings")}
                   </button>
                   <div className="border-t border-(--border) my-1"></div>
                   <button
@@ -174,7 +192,7 @@ export default function MainLayout() {
                     }}
                     className="w-full text-left px-4 py-2 hover:bg-(--input) text-sm text-(--foreground) transition-colors"
                   >
-                    Logout
+                    {t("logout")}
                   </button>
                 </div>
               )}

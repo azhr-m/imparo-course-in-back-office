@@ -35,7 +35,7 @@ export default function ActivatePage() {
     "idle" | "loading" | "success" | "error"
   >(!email || !expires || !signature ? "error" : "idle");
   const [errorMessage, setErrorMessage] = useState(
-    !email || !expires || !signature ? t("invalid_activation_link") : "",
+    !email || !expires || !signature ? t("invalid_activation_link") : ""
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -66,7 +66,7 @@ export default function ActivatePage() {
       const apiErr = error as ApiError;
       setStatus("error");
       setErrorMessage(
-        apiErr.response?.data?.message || t("invalid_activation_link"),
+        apiErr.response?.data?.message || t("invalid_activation_link")
       );
     }
   };
@@ -186,7 +186,7 @@ export default function ActivatePage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-[#d32f2f] pl-11 pr-4 py-3.5 rounded-2xl focus:ring-4 focus:ring-[#d32f2f]/10 outline-none text-sm font-bold transition-all"
-                    placeholder={t('password_hint')}
+                    placeholder={t("password_hint")}
                   />
                 </div>
               </div>
@@ -206,7 +206,7 @@ export default function ActivatePage() {
                     value={passwordConfirmation}
                     onChange={(e) => setPasswordConfirmation(e.target.value)}
                     className="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-[#d32f2f] pl-11 pr-4 py-3.5 rounded-2xl focus:ring-4 focus:ring-[#d32f2f]/10 outline-none text-sm font-bold transition-all"
-                    placeholder={t('confirm_password_placeholder')}
+                    placeholder={t("confirm_password_placeholder")}
                   />
                 </div>
               </div>

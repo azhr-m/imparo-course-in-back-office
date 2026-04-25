@@ -150,5 +150,16 @@
   "submission_details": "Детайли на записа",
   "applicant_details": "Лични данни на кандидата",
   "review_documents": "Преглед на документи",
-  "applicant_info": "Информация за кандидата"
+  "applicant_info": "Информация за кандидата",
+  "toggle_language": "Превключи език",
+  "toggle_theme": "Превключи тема",
+  "user_view": "Потребителски изглед",
+  "settings": "Настройки",
+  "submitted_by": "Подадено от",
+  "residential_address": "Настоящ адрес",
+  "document_type_id_front": "Лична карта (Лице)",
+  "document_type_id_back": "Лична карта (Гръб)",
+  "document_type_drivers_license_front": "Шофьорска книжка (Лице)",
+  "document_type_drivers_license_back": "Шофьорска книжка (Гръб)",
+  "no_documents_uploaded": "Няма качени документи за тази заявка"
 }

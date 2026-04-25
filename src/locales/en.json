@@ -150,5 +150,16 @@
   "submission_details": "Submission Details",
   "applicant_details": "Applicant Personal Details",
   "review_documents": "Review Documents",
-  "applicant_info": "Applicant Information"
+  "applicant_info": "Applicant Information",
+  "toggle_language": "Toggle Language",
+  "toggle_theme": "Toggle Theme",
+  "user_view": "User View",
+  "settings": "Settings",
+  "submitted_by": "Submitted By",
+  "residential_address": "Residential Address",
+  "document_type_id_front": "ID Card (Front)",
+  "document_type_id_back": "ID Card (Back)",
+  "document_type_drivers_license_front": "Driver's License (Front)",
+  "document_type_drivers_license_back": "Driver's License (Back)",
+  "no_documents_uploaded": "No documents uploaded for this submission"
 }

@@ -1,27 +1,26 @@
-import axios from 'axios';
-import i18n from '../i18n';
+import axios from "axios";
+import i18n from "../i18n";
 
-// export const API_BASE_URL = 'https://course-in-api.mytextbook.net/api';
-export const API_BASE_URL = 'http://localhost:8000/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    "Content-Type": "application/json",
+    Accept: "application/json",
   },
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  
+
   // Set Accept-Language matching selected language
-  const lang = i18n.language || 'bg';
-  config.headers['Accept-Language'] = lang;
-  
+  const lang = i18n.language || "bg";
+  config.headers["Accept-Language"] = lang;
+
   return config;
 });
 
