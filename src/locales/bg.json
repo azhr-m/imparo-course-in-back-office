@@ -161,5 +161,7 @@
   "document_type_id_back": "Лична карта (Гръб)",
   "document_type_drivers_license_front": "Шофьорска книжка (Лице)",
   "document_type_drivers_license_back": "Шофьорска книжка (Гръб)",
-  "no_documents_uploaded": "Няма качени документи за тази заявка"
+  "no_documents_uploaded": "Няма качени документи за тази заявка",
+  "logout_confirm_title": "Потвърждение за изход",
+  "logout_confirm_desc": "Сигурни ли сте, че искате да излезете от профила си?"
 }

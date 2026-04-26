@@ -23,6 +23,7 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -115,14 +116,11 @@ export default function MainLayout() {
           <div className="my-4 border-t border-(--border)/50"></div>
 
           <button
-            onClick={() => {
-              logout();
-              navigate("/login");
-            }}
+            onClick={() => setShowLogoutConfirm(true)}
             className="w-full flex items-center px-4 py-2.5 text-sm font-medium text-gray-500 hover:text-(--foreground) transition-colors"
           >
             <LogOut size={16} className="mr-3 opacity-60" />
-            {t("logout", "Logout")}
+            {t("logout")}
           </button>
         </nav>
       </aside>
@@ -187,8 +185,8 @@ export default function MainLayout() {
                   <div className="border-t border-(--border) my-1"></div>
                   <button
                     onClick={() => {
-                      logout();
-                      navigate("/login");
+                      setProfileOpen(false);
+                      setShowLogoutConfirm(true);
                     }}
                     className="w-full text-left px-4 py-2 hover:bg-(--input) text-sm text-(--foreground) transition-colors"
                   >
@@ -212,6 +210,40 @@ export default function MainLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-(--card) rounded-xl p-8 max-w-sm w-full border border-(--border) shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <LogOut className="text-red-600 dark:text-red-400" size={24} />
+            </div>
+            <h3 className="text-xl font-bold mb-2 text-center text-(--foreground)">
+              {t("logout_confirm_title")}
+            </h3>
+            <p className="text-center text-gray-500 dark:text-gray-400 mb-8">
+              {t("logout_confirm_desc")}
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="w-full bg-(--input) text-(--foreground) p-3 rounded-lg font-medium transition hover:bg-(--border)"
+              >
+                {t("cancel")}
+              </button>
+              <button
+                onClick={() => {
+                  logout();
+                  navigate("/login");
+                }}
+                className="w-full bg-[#d32f2f] text-white p-3 rounded-lg font-medium hover:bg-[#b71c1c] transition shadow-lg shadow-red-900/20"
+              >
+                {t("logout")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

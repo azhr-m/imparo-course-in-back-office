@@ -128,9 +128,8 @@ export default function LandingPage() {
             </ol>
             <div className="flex flex-col gap-3">
               <a
-                href="#"
+                href="https://expo.dev/artifacts/eas/fmvd9Vm2RsYezvK3c1SS6D.apk"
                 className="w-full bg-[#d32f2f] text-white p-3 rounded font-medium text-center hover:bg-[#b71c1c] transition text-sm"
-                onClick={() => alert(t("download_starting"))}
               >
                 {t("download_apk")}
               </a>

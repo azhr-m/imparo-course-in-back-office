@@ -161,5 +161,7 @@
   "document_type_id_back": "ID Card (Back)",
   "document_type_drivers_license_front": "Driver's License (Front)",
   "document_type_drivers_license_back": "Driver's License (Back)",
-  "no_documents_uploaded": "No documents uploaded for this submission"
+  "no_documents_uploaded": "No documents uploaded for this submission",
+  "logout_confirm_title": "Confirm Sign Out",
+  "logout_confirm_desc": "Are you sure you want to sign out of your account?"
 }
