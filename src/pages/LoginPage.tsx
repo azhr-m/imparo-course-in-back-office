@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../components/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import api from "../lib/api";
 import { AxiosError } from "axios";
 import { Globe, ArrowLeft, Eye, EyeOff } from "lucide-react";
@@ -14,7 +14,7 @@ const sliderImages = [
 
 export default function LoginPage() {
   const { t, i18n } = useTranslation();
-  const { login } = useAuth();
+  const { token, login } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -30,6 +30,10 @@ export default function LoginPage() {
     }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const toggleLanguage = () => {
     const newLang = i18n.language === "bg" ? "en" : "bg";

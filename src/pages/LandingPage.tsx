@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Apple,
   Smartphone,
@@ -13,7 +13,10 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "../components/ThemeProvider";
 
 export default function LandingPage() {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [modalOpen, setModalOpen] = useState(
+    searchParams.get("download") === "android"
+  );
   const { t, i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
 
