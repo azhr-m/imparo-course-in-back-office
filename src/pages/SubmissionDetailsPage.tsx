@@ -19,6 +19,7 @@ import {
   ExternalLink,
   Copy,
   Check,
+  CheckCheck,
   Phone,
   Globe,
 } from "lucide-react";
@@ -64,6 +65,7 @@ interface CopyButtonProps {
   copiedId: string | null;
   onCopy: (text: string, fieldId: string) => void;
   tooltip: string;
+  hasBeenCopied?: boolean;
 }
 
 const CopyButton = ({
@@ -71,20 +73,35 @@ const CopyButton = ({
   fieldId,
   copiedId,
   onCopy,
-  tooltip,
-}: CopyButtonProps) => (
-  <button
-    onClick={() => onCopy(text, fieldId)}
-    className="p-1.5 rounded-lg bg-(--input) hover:bg-blue-100 dark:hover:bg-blue-900/40 text-gray-400 hover:text-blue-600 transition-all ml-2"
-    title={tooltip}
-  >
-    {copiedId === fieldId ? (
-      <Check size={14} className="text-emerald-500" />
-    ) : (
-      <Copy size={14} />
-    )}
-  </button>
-);
+  hasBeenCopied,
+}: Omit<CopyButtonProps, "tooltip">) => {
+  const { t } = useTranslation();
+  return (
+    <button
+      onClick={() => onCopy(text, fieldId)}
+      className={`p-2 rounded-lg transition-all group relative active:scale-90
+      ${
+        copiedId === fieldId
+          ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20"
+          : hasBeenCopied
+            ? "bg-amber-50 text-amber-600 dark:bg-amber-900/20"
+            : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+      }
+    `}
+    >
+      {copiedId === fieldId ? (
+        <Check size={16} className="animate-in zoom-in duration-200" />
+      ) : hasBeenCopied ? (
+        <CheckCheck size={16} className="text-amber-600" />
+      ) : (
+        <Copy size={16} />
+      )}
+      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+        {copiedId === fieldId ? t("copied") : t("copy")}
+      </span>
+    </button>
+  );
+};
 
 export default function SubmissionDetailsPage() {
   const { id } = useParams();
@@ -92,6 +109,7 @@ export default function SubmissionDetailsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedFields, setCopiedFields] = useState<string[]>([]);
 
   const [decisionModal, setDecisionModal] = useState<{
     show: boolean;
@@ -143,6 +161,9 @@ export default function SubmissionDetailsPage() {
   const handleCopy = (text: string, fieldId: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(fieldId);
+    if (!copiedFields.includes(fieldId)) {
+      setCopiedFields((prev) => [...prev, fieldId]);
+    }
     setTimeout(() => setCopiedId(null), 2000);
   };
 
@@ -274,15 +295,19 @@ export default function SubmissionDetailsPage() {
                 <p className="text-[10px] font-black opacity-40 uppercase tracking-widest">
                   {t("full_name")}
                 </p>
-                <div className="flex items-center justify-between p-3.5 bg-(--input) rounded-xl font-bold text-sm">
+                <div className={`flex items-center justify-between p-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+                  copiedFields.includes("name") 
+                    ? "bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-900/30 opacity-70 shadow-inner" 
+                    : "bg-(--input)"
+                }`}>
                   <span className="truncate">{submission.full_name}</span>
-                  <CopyButton
-                    text={submission.full_name}
-                    fieldId="name"
-                    copiedId={copiedId}
-                    onCopy={handleCopy}
-                    tooltip={t("copy")}
-                  />
+                    <CopyButton
+                      text={submission.full_name}
+                      fieldId="name"
+                      copiedId={copiedId}
+                      onCopy={handleCopy}
+                      hasBeenCopied={copiedFields.includes("name")}
+                    />
                 </div>
               </div>
 
@@ -290,14 +315,18 @@ export default function SubmissionDetailsPage() {
                 <p className="text-[10px] font-black opacity-40 uppercase tracking-widest">
                   {t("bulgarian_id")}
                 </p>
-                <div className="flex items-center justify-between p-3.5 bg-(--input) rounded-xl font-mono font-bold text-sm">
+                <div className={`flex items-center justify-between p-3.5 rounded-xl font-mono font-bold text-sm transition-all duration-300 ${
+                  copiedFields.includes("id") 
+                    ? "bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-900/30 opacity-70 shadow-inner" 
+                    : "bg-(--input)"
+                }`}>
                   <span>{submission.bulgarian_id}</span>
                   <CopyButton
                     text={submission.bulgarian_id}
                     fieldId="id"
                     copiedId={copiedId}
                     onCopy={handleCopy}
-                    tooltip={t("copy")}
+                    hasBeenCopied={copiedFields.includes("id")}
                   />
                 </div>
               </div>
@@ -306,7 +335,11 @@ export default function SubmissionDetailsPage() {
                 <p className="text-[10px] font-black opacity-40 uppercase tracking-widest">
                   {t("phone")}
                 </p>
-                <div className="flex items-center justify-between p-3.5 bg-(--input) rounded-xl font-bold text-sm">
+                <div className={`flex items-center justify-between p-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+                  copiedFields.includes("phone") 
+                    ? "bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-900/30 opacity-70 shadow-inner" 
+                    : "bg-(--input)"
+                }`}>
                   <span className="flex items-center gap-2">
                     <Phone size={14} className="opacity-50" />{" "}
                     {submission.phone || "N/A"}
@@ -317,7 +350,7 @@ export default function SubmissionDetailsPage() {
                       fieldId="phone"
                       copiedId={copiedId}
                       onCopy={handleCopy}
-                      tooltip={t("copy")}
+                      hasBeenCopied={copiedFields.includes("phone")}
                     />
                   )}
                 </div>
@@ -327,7 +360,11 @@ export default function SubmissionDetailsPage() {
                 <p className="text-[10px] font-black opacity-40 uppercase tracking-widest">
                   {t("date_of_birth")}
                 </p>
-                <div className="flex items-center justify-between p-3.5 bg-(--input) rounded-xl font-bold text-sm">
+                <div className={`flex items-center justify-between p-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+                  copiedFields.includes("dob") 
+                    ? "bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-900/30 opacity-70 shadow-inner" 
+                    : "bg-(--input)"
+                }`}>
                   <span className="flex items-center gap-2">
                     <Calendar size={14} className="opacity-50" />{" "}
                     {submission.date_of_birth || "N/A"}
@@ -338,7 +375,7 @@ export default function SubmissionDetailsPage() {
                       fieldId="dob"
                       copiedId={copiedId}
                       onCopy={handleCopy}
-                      tooltip={t("copy")}
+                      hasBeenCopied={copiedFields.includes("dob")}
                     />
                   )}
                 </div>
@@ -348,7 +385,11 @@ export default function SubmissionDetailsPage() {
                 <p className="text-[10px] font-black opacity-40 uppercase tracking-widest">
                   {t("place_of_birth")}
                 </p>
-                <div className="flex items-center justify-between p-3.5 bg-(--input) rounded-xl font-bold text-sm">
+                <div className={`flex items-center justify-between p-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+                  copiedFields.includes("pob") 
+                    ? "bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-900/30 opacity-70 shadow-inner" 
+                    : "bg-(--input)"
+                }`}>
                   <span className="flex items-center gap-2">
                     <MapPin size={14} className="opacity-50" />{" "}
                     {submission.place_of_birth}
@@ -358,7 +399,7 @@ export default function SubmissionDetailsPage() {
                     fieldId="pob"
                     copiedId={copiedId}
                     onCopy={handleCopy}
-                    tooltip={t("copy")}
+                    hasBeenCopied={copiedFields.includes("pob")}
                   />
                 </div>
               </div>
@@ -367,7 +408,11 @@ export default function SubmissionDetailsPage() {
                 <p className="text-[10px] font-black opacity-40 uppercase tracking-widest">
                   {t("country_of_birth")}
                 </p>
-                <div className="flex items-center justify-between p-3.5 bg-(--input) rounded-xl font-bold text-sm">
+                <div className={`flex items-center justify-between p-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+                  copiedFields.includes("cob") 
+                    ? "bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-900/30 opacity-70 shadow-inner" 
+                    : "bg-(--input)"
+                }`}>
                   <span className="flex items-center gap-2">
                     <Globe size={14} className="opacity-50" />{" "}
                     {submission.country_of_birth || "N/A"}
@@ -378,7 +423,7 @@ export default function SubmissionDetailsPage() {
                       fieldId="cob"
                       copiedId={copiedId}
                       onCopy={handleCopy}
-                      tooltip={t("copy")}
+                      hasBeenCopied={copiedFields.includes("cob")}
                     />
                   )}
                 </div>
@@ -388,8 +433,13 @@ export default function SubmissionDetailsPage() {
                 <p className="text-[10px] font-black opacity-40 uppercase tracking-widest">
                   {t("residential_address")}
                 </p>
-                <div className="flex items-center justify-between p-3.5 bg-(--input) rounded-xl font-bold text-sm">
-                  <span className="truncate text-xs">
+                <div className={`flex items-center justify-between p-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+                  copiedFields.includes("address") 
+                    ? "bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-900/30 opacity-70 shadow-inner" 
+                    : "bg-(--input)"
+                }`}>
+                  <span className="flex items-center gap-2">
+                    <MapPin size={14} className="opacity-50" />{" "}
                     {submission.residential_address}
                   </span>
                   <CopyButton
@@ -397,7 +447,7 @@ export default function SubmissionDetailsPage() {
                     fieldId="address"
                     copiedId={copiedId}
                     onCopy={handleCopy}
-                    tooltip={t("copy")}
+                    hasBeenCopied={copiedFields.includes("address")}
                   />
                 </div>
               </div>
