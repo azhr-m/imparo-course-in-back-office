@@ -121,16 +121,12 @@ export default function ActivatePage() {
 
                 <div className="grid grid-cols-1 gap-3">
                   <a
-                    href={`${import.meta.env.VITE_API_URL || ""}/download/android`}
+                    href={`${import.meta.env.VITE_APP_URL || ""}`}
                     className="flex items-center justify-center gap-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white py-4 rounded-lg font-black transition-all hover:scale-[1.02] active:scale-95 shadow-lg"
                   >
                     <Download size={20} />
                     {t("download_android")}
                   </a>
-                  <div className="flex items-center justify-center gap-3 bg-slate-100 dark:bg-slate-800 text-slate-400 py-4 rounded-lg font-black border border-slate-200 dark:border-slate-700 cursor-not-allowed">
-                    <Smartphone size={20} />
-                    {t("coming_soon_ios")}
-                  </div>
                 </div>
               </div>
 

@@ -50,6 +50,7 @@ interface Submission {
   is_foreign: boolean;
   status: string;
   status_notes?: string;
+  course_end_date?: string;
   submitted_at: string;
   created_at: string;
   course: Course;
@@ -96,10 +97,12 @@ export default function SubmissionDetailsPage() {
     show: boolean;
     selectedStatus: string | null;
     notes: string;
+    courseEndDate: string;
   }>({
     show: false,
     selectedStatus: null,
     notes: "",
+    courseEndDate: "",
   });
 
   const {
@@ -118,19 +121,22 @@ export default function SubmissionDetailsPage() {
     mutationFn: async ({
       status,
       notes,
+      courseEndDate,
     }: {
       status: string;
       notes?: string;
+      courseEndDate?: string;
     }) => {
       await api.patch(`/submissions/${id}/status`, {
         status,
         status_notes: notes,
+        course_end_date: courseEndDate,
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["submission", id] });
       queryClient.invalidateQueries({ queryKey: ["submissions"] });
-      setDecisionModal({ show: false, selectedStatus: null, notes: "" });
+      setDecisionModal({ show: false, selectedStatus: null, notes: "", courseEndDate: "" });
     },
   });
 
@@ -240,6 +246,7 @@ export default function SubmissionDetailsPage() {
                         ? "correction_required"
                         : null,
                     notes: submission.status_notes || "",
+                    courseEndDate: submission.course_end_date || "",
                   })
                 }
                 className="bg-[#d32f2f] hover:bg-[#b71c1c] text-white px-8 py-3.5 rounded-xl font-black shadow-xl shadow-red-500/20 transition-all flex items-center gap-2 group active:scale-95"
@@ -423,6 +430,16 @@ export default function SubmissionDetailsPage() {
               </p>
             </div>
           </div>
+
+          <div className="bg-(--card) rounded-3xl border border-(--border) p-8 shadow-sm">
+            <h3 className="text-xs font-black uppercase tracking-widest opacity-40 mb-6">
+              {t("course_end_date")}
+            </h3>
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl flex items-center gap-3 font-bold text-(--foreground)">
+              <Calendar size={18} className="text-blue-500" />
+              <span>{submission.course_end_date || t("not_available")}</span>
+            </div>
+          </div>
         </div>
 
         {/* Center/Right: Document Viewer */}
@@ -601,6 +618,23 @@ export default function SubmissionDetailsPage() {
                     />
                   </div>
 
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black uppercase tracking-widest opacity-40 ml-1">
+                      {t("course_end_date")}
+                    </label>
+                    <input
+                      type="date"
+                      value={decisionModal.courseEndDate}
+                      onChange={(e) =>
+                        setDecisionModal((p) => ({
+                          ...p,
+                          courseEndDate: e.target.value,
+                        }))
+                      }
+                      className="w-full p-4 bg-(--input) border border-(--border) rounded-2xl focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-bold"
+                    />
+                  </div>
+
                   <div className="flex gap-4 pt-6">
                     <button
                       onClick={() =>
@@ -618,6 +652,7 @@ export default function SubmissionDetailsPage() {
                         updateStatus.mutate({
                           status: decisionModal.selectedStatus!,
                           notes: decisionModal.notes,
+                          courseEndDate: decisionModal.courseEndDate,
                         })
                       }
                       disabled={updateStatus.isPending}

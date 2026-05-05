@@ -163,5 +163,8 @@
   "document_type_drivers_license_back": "Шофьорска книжка (Гръб)",
   "no_documents_uploaded": "Няма качени документи за тази заявка",
   "logout_confirm_title": "Потвърждение за изход",
-  "logout_confirm_desc": "Сигурни ли сте, че искате да излезете от профила си?"
+  "logout_confirm_desc": "Сигурни ли сте, че искате да излезете от профила си?",
+  "course_end_date": "Дата на завършване на курса",
+  "course_end_date_placeholder": "Изберете очаквана дата на завършване",
+  "not_available": "Н/A"
 }
