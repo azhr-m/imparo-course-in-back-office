@@ -17,6 +17,8 @@ const AgentDetailsPage = lazy(() => import("./pages/AgentDetailsPage"));
 const CoursesPage = lazy(() => import("./pages/CoursesPage"));
 const UsersPage = lazy(() => import("./pages/UsersPage"));
 const ActivatePage = lazy(() => import("./pages/ActivatePage"));
+const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
+const SupportPage = lazy(() => import("./pages/SupportPage"));
 
 const queryClient = new QueryClient();
 
@@ -37,6 +39,8 @@ function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/activate" element={<ActivatePage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/support" element={<SupportPage />} />
 
                 {/* Protected Routes inside Layout */}
                 <Route element={<MainLayout />}>

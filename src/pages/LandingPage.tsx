@@ -14,8 +14,8 @@ import { useTheme } from "../components/ThemeProvider";
 
 export default function LandingPage() {
   const [searchParams] = useSearchParams();
-  const [modalOpen, setModalOpen] = useState(
-    searchParams.get("download") === "android"
+  const [modalType, setModalType] = useState<"android" | "ios" | null>(
+    searchParams.get("download") === "android" ? "android" : null
   );
   const { t, i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
@@ -101,14 +101,14 @@ export default function LandingPage() {
             </p>
             <div className="flex gap-3 w-full justify-center">
               <button
-                onClick={() => setModalOpen(true)}
+                onClick={() => setModalType("android")}
                 className="flex items-center gap-2 bg-[#d32f2f] text-white px-5 py-2.5 rounded font-medium hover:bg-[#b71c1c] transition-colors flex-1 justify-center text-sm"
               >
                 <Download size={18} /> {t("download_android")}
               </button>
               <button
-                className="flex items-center gap-2 bg-transparent border border-(--border) text-(--foreground) px-5 py-2.5 rounded font-medium hover:bg-(--input) transition-colors flex-1 justify-center opacity-50 cursor-not-allowed text-sm"
-                title={t("coming_soon_ios")}
+                onClick={() => setModalType("ios")}
+                className="flex items-center gap-2 bg-transparent border border-(--border) text-(--foreground) px-5 py-2.5 rounded font-medium hover:bg-(--input) transition-colors flex-1 justify-center text-sm"
               >
                 <Apple size={18} /> iOS
               </button>
@@ -117,7 +117,7 @@ export default function LandingPage() {
         </div>
       </main>
 
-      {modalOpen && (
+      {modalType === "android" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-(--card) rounded p-8 max-w-sm w-full border border-(--border) relative">
             <h3 className="text-xl font-bold mb-4 text-[#ef5350]">
@@ -131,13 +131,13 @@ export default function LandingPage() {
             </ol>
             <div className="flex flex-col gap-3">
               <a
-                href="https://expo.dev/artifacts/eas/fmvd9Vm2RsYezvK3c1SS6D.apk"
+                href="https://expo.dev/artifacts/eas/cakJUbD4sm29cHktf3dqXF.apk"
                 className="w-full bg-[#d32f2f] text-white p-3 rounded font-medium text-center hover:bg-[#b71c1c] transition text-sm"
               >
                 {t("download_apk")}
               </a>
               <button
-                onClick={() => setModalOpen(false)}
+                onClick={() => setModalType(null)}
                 className="w-full bg-transparent border border-(--border) p-3 rounded font-medium text-center hover:bg-(--input) transition text-sm"
               >
                 {t("close")}
@@ -146,6 +146,39 @@ export default function LandingPage() {
           </div>
         </div>
       )}
+
+      {modalType === "ios" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-(--card) rounded p-8 max-w-sm w-full border border-(--border) relative">
+            <h3 className="text-xl font-bold mb-4 text-[#ef5350]">
+              {t("ios_install_title") || "iOS Access"}
+            </h3>
+            <p className="opacity-80 mb-8 text-sm leading-relaxed">
+              {t("ios_install_desc") || "Support will contact you directly and invite you to the application via TestFlight."}
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => setModalType(null)}
+                className="w-full bg-transparent border border-(--border) p-3 rounded font-medium text-center hover:bg-(--input) transition text-sm"
+              >
+                {t("close")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <footer className="py-6 border-t border-(--border) flex justify-center items-center text-sm opacity-60">
+        <div className="flex space-x-6">
+          <span>&copy; {new Date().getFullYear()} Imparo. {t("all_rights_reserved") || "All rights reserved."}</span>
+          <Link to="/privacy" className="hover:underline">
+            {t("privacy_policy") || "Privacy Policy"}
+          </Link>
+          <Link to="/support" className="hover:underline">
+            {t("support") || "Support"}
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }
